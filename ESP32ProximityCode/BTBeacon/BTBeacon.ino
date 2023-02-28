@@ -35,7 +35,7 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
 
 void setup() {
   Serial.begin(115200); //Enable UART on ESP32
-  Serial.println("Scanning..."); // Print Scanning
+  // Serial.println("Scanning..."); // Print Scanning
   pinMode(5, OUTPUT); //make BUILTIN_LED pin as output
   pinMode(17,OUTPUT);
   BLEDevice::init("");
