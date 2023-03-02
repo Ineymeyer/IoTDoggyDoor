@@ -8,31 +8,40 @@ Servo myservo;  // create servo object to control a servo
 int pos = 0;    // variable to store the servo position
 
 void setup() {
-  myservo.attach(8);  // attaches the servo on pin 9 to the servo object
+  myservo.attach(8);  // attaches the servo on pin 8 to the servo object
   myservo.write(0);
   pinMode(7,INPUT);
   pinMode(6,INPUT_PULLUP);
   pinMode(4, INPUT_PULLUP);
   pinMode(3,OUTPUT);
+  pinMode(11, OUTPUT);
 }
 boolean lock = false;
 boolean changed = false;
+boolean doorClosed = false;
 
 void loop() {
 
   if(digitalRead(4) == HIGH){
+    doorClosed = false;
     digitalWrite(3,HIGH);
   }
   else{
+    doorClosed = true;
     digitalWrite(3,LOW);
   }
 
-  if ((digitalRead(7) == HIGH) && (changed != true)){
-    lockDoor();
-    changed = true;
+  if ((digitalRead(7) == HIGH) && (changed != true) && (digitalRead(4) == LOW)){
+    delay(1000);
+    if (digitalRead(4) == LOW){ // Used to make sure still door is still closed
+      lockDoor();
+      digitalWrite(11, HIGH);
+      changed = true;
+    }
   }
   else if((digitalRead(7) == LOW) && (changed == true)){
     unlockDoor();
+    digitalWrite(11, LOW);
     changed = false; 
   }
 };
@@ -51,4 +60,3 @@ void unlockDoor(){
     delay(5);                       // waits 15ms for the servo to reach the position
   }
 };
-
