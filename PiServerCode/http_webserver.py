@@ -8,6 +8,8 @@ host_name = '172.23.31.250'  # IP Address of Raspberry Pi
 host_port = 8000
 PIN = 14
 lock_status = 'unknown'
+loginBool = False
+
 
 def setupGPIO():
     GPIO.setmode(GPIO.BCM)
@@ -19,6 +21,7 @@ def setupGPIO():
 class MyServer(BaseHTTPRequestHandler):
 
     setupGPIO()
+    print("SOMEONE CONNECTED")
 
     def do_HEAD(self):
         self.send_response(200)
@@ -33,54 +36,88 @@ class MyServer(BaseHTTPRequestHandler):
 
     def do_GET(self):
         html = '''
-            <html>
-            <head> 
-                <meta name="viewport" content="with=device-width, initial-scale=1.0">
-                <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
-                <meta http-equiv="refresh" content="3" >
-            </head>
-                <body>
-                <section style="text-align:center">
-                    <div style="padding-top:30px">
-                        <h1>Welcome To Your Doggy Door!</h1>
-                    </div>
-                </section>
-                <form action="/" method="POST">
+        '''
+        if loginBool:
+
+            html = '''
+                <html>
+                <head> 
+                    <meta name="viewport" content="with=device-width, initial-scale=1.0">
+                    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+                    <meta http-equiv="refresh" content="3" >
+                </head>
+                    <body>
                     <section style="text-align:center">
-                        <div style="margin:1rem; padding:2rem 2rem; text-align:center">
-                            <div style="display:inline-block; padding:1rem 1rem; vertical-align:middle">
-                                <h3>Basic Door Control:</h3>
-                                <div style="display:table; width:100%; height:auto; margin:10px 0px">
-                                    <input type="submit" name="submit" value="Unlock">
-                                </div>
-                                <div style="display:table; width:100%; height:auto; margin:10px 0px">
-                                    <input type="submit" name="submit" value="Lock">
-                                </div>
-                            </div>
-                            <div style="display:inline-block; padding:1rem 1rem; vertical-align:middle">
-                                <h3>Special Features:</h3>
-                                <div style="display:table; width:100%; height:auto; margin:10px 0px;">
-                                    <input type="submit" name="submit" value="Bluetooth Track">
-                                </div>
-                                <h10>Door will unlock when your pet is close; otherwise, door will lock</h10>
-                                <div style="display:table; width:100%; height:auto; margin:10px 0px">
-                                    <input type="submit" name="submit" value="Summon Pet">
-                                </div>
-                                <h10>Play a sound to grab the attention of your pet</h10>
-                                <div style="display:table; width:100%; height:auto; margin:10px 0px">
-                                    <input type="submit" name="submit" value="Release Treat">
-                                </div>
-                                <h10>Dispense a treat for your pet</h10>
-                            </div>
+                        <div style="padding-top:30px">
+                            <h1>Welcome To Your Doggy Door!</h1>
                         </div>
                     </section>
-                </form>
-                <section>
-                    <h10>Lock status: {}</h10>
-                </section>
-                </body>
-            </html>
-        '''
+                    <form action="/" method="POST">
+                        <section style="text-align:center">
+                            <div style="margin:1rem; padding:2rem 2rem; text-align:center">
+                                <div style="display:inline-block; padding:1rem 1rem; vertical-align:middle">
+                                    <h3>Basic Door Control:</h3>
+                                    <div style="display:table; width:100%; height:auto; margin:10px 0px">
+                                        <input type="submit" name="submit" value="Unlock">
+                                    </div>
+                                    <div style="display:table; width:100%; height:auto; margin:10px 0px">
+                                        <input type="submit" name="submit" value="Lock">
+                                    </div>
+                                </div>
+                                <div style="display:inline-block; padding:1rem 1rem; vertical-align:middle">
+                                    <h3>Special Features:</h3>
+                                    <div style="display:table; width:100%; height:auto; margin:10px 0px;">
+                                        <input type="submit" name="submit" value="Bluetooth Track">
+                                    </div>
+                                    <h10>Door will unlock when your pet is close; otherwise, door will lock</h10>
+                                    <div style="display:table; width:100%; height:auto; margin:10px 0px">
+                                        <input type="submit" name="submit" value="Summon Pet">
+                                    </div>
+                                    <h10>Play a sound to grab the attention of your pet</h10>
+                                    <div style="display:table; width:100%; height:auto; margin:10px 0px">
+                                        <input type="submit" name="submit" value="Release Treat">
+                                    </div>
+                                    <h10>Dispense a treat for your pet</h10>
+                                </div>
+                            </div>
+                        </section>
+                    </form>
+                    <section>
+                        <h10>Lock status: {}</h10>
+                    </section>
+                    </body>
+                </html>
+            '''
+        else:
+
+            html = '''
+                <html>
+                <head> 
+                    <meta name="viewport" content="with=device-width, initial-scale=1.0">
+                    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+                    <meta http-equiv="refresh" content="3" >
+                </head>
+                    <body>
+                    <section style="text-align:center">
+                        <div style="padding-top:30px">
+                            <h1>Please Login to Your Doggy Door!</h1>
+                        </div>
+                    </section>
+                    <form action="/" method="POST">
+                        <section style="text-align:center">
+                            <div style="margin:1rem; padding:2rem 2rem; text-align:center">
+                                <div style="display:inline-block; padding:1rem 1rem; vertical-align:middle">
+                                    <h3>Basic Door Control:</h3>
+                                    <div style="display:table; width:100%; height:auto; margin:10px 0px">
+                                        <input type="submit" name="submit" value="Next">
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </form>
+                    </body>
+                </html>
+            '''
 
         self.do_HEAD()
         state = GPIO.input(4)
@@ -97,9 +134,11 @@ class MyServer(BaseHTTPRequestHandler):
         post_data = self.rfile.read(content_length).decode("utf-8")
         post_data = post_data.split("=")[1]
 
-        
+        if post_data == 'Next':
+            global loginBool
+            loginBool = True
 
-        if post_data == 'Lock':
+        elif post_data == 'Lock':
             GPIO.output(PIN, GPIO.HIGH)
             lock_status = 'locked'
             print(lock_status)
@@ -109,6 +148,7 @@ class MyServer(BaseHTTPRequestHandler):
             print(lock_status)
 
         print("LED is {}".format(post_data))
+        print("login is : {}".format(loginBool))
         self._redirect('/')  # Redirect back to the root url
 
 
