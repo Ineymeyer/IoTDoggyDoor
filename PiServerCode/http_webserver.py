@@ -9,6 +9,10 @@ host_port = 8000
 PIN = 14
 lock_status = 'unknown'
 loginBool = False
+userName = 'test'
+password = 'testtest'
+inputUsr = 'unknown'
+inputUsr = 'unknown'
 
 
 def setupGPIO():
@@ -21,7 +25,6 @@ def setupGPIO():
 class MyServer(BaseHTTPRequestHandler):
 
     setupGPIO()
-    print("SOMEONE CONNECTED")
 
     def do_HEAD(self):
         self.send_response(200)
@@ -95,7 +98,6 @@ class MyServer(BaseHTTPRequestHandler):
                 <head> 
                     <meta name="viewport" content="with=device-width, initial-scale=1.0">
                     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
-                    <meta http-equiv="refresh" content="3" >
                 </head>
                     <body>
                     <section style="text-align:center">
@@ -107,9 +109,15 @@ class MyServer(BaseHTTPRequestHandler):
                         <section style="text-align:center">
                             <div style="margin:1rem; padding:2rem 2rem; text-align:center">
                                 <div style="display:inline-block; padding:1rem 1rem; vertical-align:middle">
-                                    <h3>Basic Door Control:</h3>
+                                    <h3>Login:</h3>
                                     <div style="display:table; width:100%; height:auto; margin:10px 0px">
-                                        <input type="submit" name="submit" value="Next">
+                                        <label for="usr">Username:</label>
+                                        <input id="usr" name="usr">
+                                        <label for="pwd">Password:</label>
+                                        <input type="password" id="pwd" name="pwd">
+                                        <div style="display:table; width:100%; height:auto; margin:10px 0px">
+                                            <input type="submit" name="submit" value="Login">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -132,11 +140,15 @@ class MyServer(BaseHTTPRequestHandler):
 
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length).decode("utf-8")
-        post_data = post_data.split("=")[1]
-
-        if post_data == 'Next':
+        post_data = post_data[:-13]
+        post_data = post_data[4:]
+        print(post_data)
+        #post_data = post_data.split("=")[1]
+        print(post_data)
+        if post_data == 'Login':
             global loginBool
             loginBool = True
+            print("HERE")
 
         elif post_data == 'Lock':
             GPIO.output(PIN, GPIO.HIGH)
