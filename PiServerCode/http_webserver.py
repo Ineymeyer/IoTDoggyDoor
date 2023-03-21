@@ -8,7 +8,10 @@ host_name = '172.23.31.250'  # IP Address of Raspberry Pi
 host_port = 8000
 PIN = 14
 lock_status = 'unknown'
+global loginBool
 loginBool = False
+global loginAttempt
+loginAttempt = False
 userName = 'test'
 password = 'testtest'
 inputUsr = 'unknown'
@@ -91,6 +94,42 @@ class MyServer(BaseHTTPRequestHandler):
                     </body>
                 </html>
             '''
+        elif loginAttempt:
+            print("HERE")
+            html = '''
+                <html>
+                <head> 
+                    <meta name="viewport" content="with=device-width, initial-scale=1.0">
+                    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+                </head>
+                    <body>
+                    <section style="text-align:center">
+                        <div style="padding-top:30px">
+                            <h1>Please Login to Your Doggy Door!</h1>
+                        </div>
+                    </section>
+                    <form action="/" method="POST">
+                        <section style="text-align:center">
+                            <div style="margin:1rem; padding:2rem 2rem; text-align:center">
+                                <div style="display:inline-block; padding:1rem 1rem; vertical-align:middle">
+                                    <h3>Login:</h3>
+                                    <div style="display:table; width:100%; height:auto; margin:10px 0px">
+                                        <label for="usr">Username:</label>
+                                        <input id="usr" name="usr">
+                                        <label for="pwd">Password:</label>
+                                        <input type="password" id="pwd" name="pwd">
+                                        <div style="display:table; width:100%; height:auto; margin:10px 0px">
+                                            <input type="submit" name="submit" value="Login">
+                                        </div>
+                                        <h3>Invalid Credentials</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </form>
+                    </body>
+                </html>
+            '''
         else:
 
             html = '''
@@ -127,6 +166,7 @@ class MyServer(BaseHTTPRequestHandler):
                 </html>
             '''
 
+
         self.do_HEAD()
         state = GPIO.input(4)
         if (state):
@@ -140,15 +180,24 @@ class MyServer(BaseHTTPRequestHandler):
 
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length).decode("utf-8")
-        post_data = post_data[:-13]
-        post_data = post_data[4:]
-        print(post_data)
-        #post_data = post_data.split("=")[1]
-        print(post_data)
+        global loginBool
+        if loginBool:
+            post_data = post_data.split("=")[1]
+        else:
+            post_data = post_data[:-13]
+            post_data = post_data[4:]
+            tempUsr, tempPass = post_data.split('&pwd=')
+            #print(tempUsr)
+            #print(tempPass)
+            if tempUsr == 'test' and tempPass == 'test123':
+                loginBool = True
+            else:
+                global loginAttempt
+                loginAttempt = True
+
         if post_data == 'Login':
-            global loginBool
             loginBool = True
-            print("HERE")
+            
 
         elif post_data == 'Lock':
             GPIO.output(PIN, GPIO.HIGH)
@@ -161,6 +210,7 @@ class MyServer(BaseHTTPRequestHandler):
 
         print("LED is {}".format(post_data))
         print("login is : {}".format(loginBool))
+        print("login attempt is : {}".format(loginAttempt))
         self._redirect('/')  # Redirect back to the root url
 
 
