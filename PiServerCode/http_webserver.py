@@ -8,6 +8,7 @@ host_name = '172.23.31.250'  # IP Address of Raspberry Pi
 host_port = 8000
 PIN = 14
 lock_status = 'unknown'
+pet_status = 'unknown'
 global loginBool
 loginBool = False
 global loginAttempt
@@ -22,8 +23,8 @@ def setupGPIO():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     GPIO.setup(4, GPIO.IN)
+    GPIO.setup(7, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) #Input from esp32
     GPIO.setup(PIN, GPIO.OUT)
-
 
 class MyServer(BaseHTTPRequestHandler):
 
@@ -90,12 +91,12 @@ class MyServer(BaseHTTPRequestHandler):
                     </form>
                     <section>
                         <h10>Lock status: {}</h10>
+                        <h10>Pet status: {}</h10>
                     </section>
                     </body>
                 </html>
             '''
         elif loginAttempt:
-            print("HERE")
             html = '''
                 <html>
                 <head> 
@@ -169,12 +170,18 @@ class MyServer(BaseHTTPRequestHandler):
 
         self.do_HEAD()
         state = GPIO.input(4)
+        petNearby = GPIO.input(7)
+    
         if (state):
             lock_status = 'Locked'
         else:
             lock_status = 'Unlocked'
+        if (petNearby):
+            pet_status = 'Nearby'
+        else:
+            pet_status = 'NOT Nearby'
         
-        self.wfile.write(html.format(lock_status).encode("utf-8"))
+        self.wfile.write(html.format(lock_status, pet_status).encode("utf-8"))
 
     def do_POST(self):
 
