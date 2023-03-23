@@ -1,0 +1,25 @@
+Right Servo:
+
+Orange: blue to power
+Brown: black to ground
+Yellow: white to pin 8
+
+Reed switch:
+
+White: Ground
+White: Pin 4
+
+Pi:
+Orange: red to pin 11 GPIO15
+Red: ground
+Brown: A1 on level shifter - GPIO14
+Red/White: B4 on level shifter GPIO4
+Black: Va on level shifter 3.3V
+
+Level Shifter: 
+GND: ground
+B1: Pin 7
+VB: 5V
+A1: GPIO14
+B4: GPIO4
+VA: 3.3V from pi
