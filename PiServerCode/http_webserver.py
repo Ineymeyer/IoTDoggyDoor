@@ -6,13 +6,16 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 
 host_name = '172.23.31.250'  # IP Address of Raspberry Pi
 host_port = 8000
-PIN = 14
+PIN = 14 #output to arduino for lock/unlock
+btO = 8 #output to arduino for bluetooth track
 lock_status = 'unknown'
 pet_status = 'unknown'
 global loginBool
 loginBool = False
 global loginAttempt
 loginAttempt = False
+global bluetoothTrack
+bluetoothTrack = False
 userName = 'test'
 password = 'testtest'
 inputUsr = 'unknown'
@@ -22,9 +25,12 @@ inputUsr = 'unknown'
 def setupGPIO():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
-    GPIO.setup(4, GPIO.IN)
+    GPIO.setup(4, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) #input from arduino to tell pi if door is locked or unlocked
     GPIO.setup(7, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) #Input from esp32
-    GPIO.setup(PIN, GPIO.OUT)
+    GPIO.setup(btO, GPIO.OUT) #output to arudion for bluetooth track
+    GPIO.setup(PIN, GPIO.OUT) #output to arduion to lock or unlock
+    GPIO.output(btO, GPIO.LOW)
+    GPIO.output(PIN, GPIO.HIGH)
 
 class MyServer(BaseHTTPRequestHandler):
 
@@ -55,43 +61,44 @@ class MyServer(BaseHTTPRequestHandler):
                 </head>
                     <body>
                     <section style="text-align:center">
-                        <div style="padding-top:30px">
-                            <h1>Welcome To Your Doggy Door!</h1>
+                        <div style="padding-top:30px; background-color:slateblue; padding:30px 0px">
+                            <h1><b>Welcome To Your Doggy Door!</b></h1>
                         </div>
                     </section>
                     <form action="/" method="POST">
                         <section style="text-align:center">
                             <div style="margin:1rem; padding:2rem 2rem; text-align:center">
                                 <div style="display:inline-block; padding:1rem 1rem; vertical-align:middle">
-                                    <h3>Basic Door Control:</h3>
+                                    <h3><b>Basic Door Control:</b></h3>
                                     <div style="display:table; width:100%; height:auto; margin:10px 0px">
-                                        <input type="submit" name="submit" value="Unlock">
+                                        <input type="submit" name="submit" value="Unlock" style="border-radius: 8px">
                                     </div>
                                     <div style="display:table; width:100%; height:auto; margin:10px 0px">
-                                        <input type="submit" name="submit" value="Lock">
+                                        <input type="submit" name="submit" value="Lock" style="border-radius: 8px">
                                     </div>
                                 </div>
                                 <div style="display:inline-block; padding:1rem 1rem; vertical-align:middle">
-                                    <h3>Special Features:</h3>
+                                    <h3><b>Special Features:</b></h3>
                                     <div style="display:table; width:100%; height:auto; margin:10px 0px;">
-                                        <input type="submit" name="submit" value="Bluetooth Track">
+                                        <input type="submit" name="submit" value="Bluetooth Track" style="border-radius: 8px">
+                                        <label>   {}</label>
                                     </div>
                                     <h10>Door will unlock when your pet is close; otherwise, door will lock</h10>
                                     <div style="display:table; width:100%; height:auto; margin:10px 0px">
-                                        <input type="submit" name="submit" value="Summon Pet">
+                                        <input type="submit" name="submit" value="Summon Pet" style="border-radius: 8px">
                                     </div>
                                     <h10>Play a sound to grab the attention of your pet</h10>
                                     <div style="display:table; width:100%; height:auto; margin:10px 0px">
-                                        <input type="submit" name="submit" value="Release Treat">
+                                        <input type="submit" name="submit" value="Release Treat" style="border-radius: 8px">
                                     </div>
                                     <h10>Dispense a treat for your pet</h10>
                                 </div>
                             </div>
                         </section>
                     </form>
-                    <section>
-                        <h10>Lock status: {}</h10>
-                        <h10>Pet status: {}</h10>
+                    <section style="text-align: center">
+                        <h5>Lock status: {}</h5>
+                        <h5>Pet status: {}</h5>
                     </section>
                     </body>
                 </html>
@@ -169,9 +176,9 @@ class MyServer(BaseHTTPRequestHandler):
 
 
         self.do_HEAD()
-        state = GPIO.input(4)
-        petNearby = GPIO.input(7)
-    
+        state = GPIO.input(4) #reading in from arduino if door is locked or unlocked
+        petNearby = GPIO.input(7) # reading in from esp to see if tag is nearby
+
         if (state):
             lock_status = 'Locked'
         else:
@@ -180,8 +187,14 @@ class MyServer(BaseHTTPRequestHandler):
             pet_status = 'Nearby'
         else:
             pet_status = 'NOT Nearby'
-        
-        self.wfile.write(html.format(lock_status, pet_status).encode("utf-8"))
+        global bluetoothTrack
+        if bluetoothTrack:
+            currentBTTrack = 'ON'
+        else:
+            currentBTTrack = 'OFF'
+        print("HERE")
+        print(bluetoothTrack)
+        self.wfile.write(html.format(currentBTTrack, lock_status, pet_status).encode("utf-8"))
 
     def do_POST(self):
 
@@ -191,20 +204,29 @@ class MyServer(BaseHTTPRequestHandler):
         if loginBool:
             post_data = post_data.split("=")[1]
         else:
-            post_data = post_data[:-13]
+            post_data = post_data[:-13] #getting input from user for username and password
             post_data = post_data[4:]
             tempUsr, tempPass = post_data.split('&pwd=')
-            #print(tempUsr)
-            #print(tempPass)
+            
             if tempUsr == 'test' and tempPass == 'test123':
                 loginBool = True
             else:
                 global loginAttempt
                 loginAttempt = True
-
+        print("NOW")
+        print(post_data)
         if post_data == 'Login':
             loginBool = True
             
+        elif post_data == 'Bluetooth+Track':
+            global bluetoothTrack
+            if bluetoothTrack:
+                bluetoothTrack = False
+                GPIO.output(btO, GPIO.LOW) #telling arduino to not listen to esp for tracking
+            else:
+                bluetoothTrack = True
+                GPIO.output(btO, GPIO.HIGH) #telling arduino to listen to esp for tracking
+
 
         elif post_data == 'Lock':
             GPIO.output(PIN, GPIO.HIGH)
