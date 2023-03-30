@@ -19,11 +19,12 @@ void setup() {
   myservo2.attach(10);
   myservo2.write(3);
   pinMode(7,INPUT_PULLUP);
-  pinMode(6,INPUT_PULLUP);
+  //pinMode(6,INPUT_PULLUP);
   pinMode(4, INPUT_PULLUP);
   pinMode(3,OUTPUT);
   pinMode(11, OUTPUT);
-  digitalWrite(11, HIGH);
+  pinMode(12, OUTPUT);
+  digitalWrite(11, LOW);  
 }
 boolean lock = false;
 boolean changed = false;
@@ -58,31 +59,31 @@ void loop() {
 void lockDoor(){
   for (pos = 3; pos <= 70; pos += 1) {
     myservo.write(pos);              
-    delay(5);   
+    delay(2);   
   } 
   for (pos1 = 35; pos1 <= 120; pos1 += 1) { 
       
     myservo1.write(pos1);              
-    delay(5);   
+    delay(2);   
   }                   
  
   for (pos2 = 63; pos2 >= 3; pos2 -= 1) { 
     myservo2.write(pos2);              
-    delay(5);
+    delay(2);
   }
 };
 
 void unlockDoor(){
   for (pos = 70; pos >= 3; pos -= 1) { 
     myservo.write(pos);              
-    delay(5);                       
+    delay(2);                       
   }
   for (pos1 = 120; pos1 >= 35; pos1 -= 1) { 
     myservo1.write(pos1);              
-    delay(5);                       
+    delay(2);                       
   }
    for (pos2 = 3; pos2 <= 63; pos2 += 1) { 
     myservo2.write(pos2);              
-    delay(5);
+    delay(2);
   }
 };
