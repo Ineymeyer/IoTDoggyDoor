@@ -2,7 +2,7 @@
 
   /************ I/O pins ************
   | Pin # |                Function                       |         Logic high         |       Logic low
-  |   3   | Signal going to test LCD                      | When door is open          | When door is closed
+  |   3   | Signal going to test LED                      | When door is open          | When door is closed
   |   4   | Signal from the magnetic strip on door        | If the door is open        | If the door is closed
   |   6   | Signal from the ESP32 Module                  | If the tag is within range | If it is out of range
   |   7   | Signal from the Raspberry Pi                  | To lock the door           | To unlock the door
@@ -64,7 +64,7 @@ void loop() {
 
   /* Locks the door if...
        The user clicked lock on the website while the door is unlocked and closed and BT tracking is disabled
-       If the door is closed and unlocked with BT tracking enabled and the tag out of range
+       The door is closed and unlocked with BT tracking enabled and the tag out of range
 
      Unlocks the door if...
        The user clicked unlock on the website while the door is locked and BT tracking is disabled
