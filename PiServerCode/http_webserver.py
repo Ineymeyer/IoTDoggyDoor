@@ -59,47 +59,51 @@ class MyServer(BaseHTTPRequestHandler):
                     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
                     <meta http-equiv="refresh" content="3" >
                 </head>
-                    <body>
+                    <body style="background-color: rgb(224, 222, 222)">
                     <section style="text-align:center">
                         <div style="padding-top:30px; background-color:slateblue; padding:30px 0px">
-                            <h1><b>Welcome To Your Doggy Door!</b></h1>
+                            <h1 style="color:snow"><b>Welcome To Your Doggy Door!</b></h1>
                         </div>
+                    </section>
+                    <section style="text-align: center">
+                        <br>
+                        <br>
+                        <h4>Lock status: {}</h4>
+                        <h4>Pet status: {}</h4>
                     </section>
                     <form action="/" method="POST">
                         <section style="text-align:center">
-                            <div style="margin:1rem; padding:2rem 2rem; text-align:center">
+                            <div style="margin:1rem; text-align:center">
                                 <div style="display:inline-block; padding:1rem 1rem; vertical-align:middle">
-                                    <h3><b>Basic Door Control:</b></h3>
+                                    <h3 style="font-size: 28px"><b>Basic Door Control:</b></h3>
                                     <div style="display:table; width:100%; height:auto; margin:10px 0px">
-                                        <input type="submit" name="submit" value="Unlock" style="border-radius: 8px">
+                                        <input type="submit" name="submit" value="Unlock" style="font-size: 20px; width: 80%; height: 60px; border-radius: 8px">
                                     </div>
                                     <div style="display:table; width:100%; height:auto; margin:10px 0px">
-                                        <input type="submit" name="submit" value="Lock" style="border-radius: 8px">
+                                        <input type="submit" name="submit" value="Lock" style="font-size: 20px; width: 80%; height: 60px; border-radius: 8px">
                                     </div>
                                 </div>
                                 <div style="display:inline-block; padding:1rem 1rem; vertical-align:middle">
-                                    <h3><b>Special Features:</b></h3>
+                                    <h3 style="font-size: 28px"><b>Special Features:</b></h3>
                                     <div style="display:table; width:100%; height:auto; margin:10px 0px;">
-                                        <input type="submit" name="submit" value="Bluetooth Track" style="border-radius: 8px">
-                                        <label>   {}</label>
+                                        <input type="submit" name="submit" value="Collar Track" style="font-size: 20px; width: fit-content; height: 60px; border-radius: 8px; padding-right: 22px; padding-left: 22px">
+                                    </div>
+                                    <div>
+                                        <label>Currently: {}</label>
                                     </div>
                                     <h10>Door will unlock when your pet is close; otherwise, door will lock</h10>
                                     <div style="display:table; width:100%; height:auto; margin:10px 0px">
-                                        <input type="submit" name="submit" value="Summon Pet" style="border-radius: 8px">
+                                        <input type="submit" name="submit" value="Summon Pet" style="font-size: 20px; width: fit-content; height: 60px; border-radius: 8px; padding-right: 20px; padding-left: 20px">
                                     </div>
                                     <h10>Play a sound to grab the attention of your pet</h10>
                                     <div style="display:table; width:100%; height:auto; margin:10px 0px">
-                                        <input type="submit" name="submit" value="Release Treat" style="border-radius: 8px">
+                                        <input type="submit" name="submit" value="Release Treat" style="font-size: 20px; width: fit-content; height: 60px; border-radius: 8px; padding-right: 20px; padding-left: 20px">
                                     </div>
                                     <h10>Dispense a treat for your pet</h10>
                                 </div>
                             </div>
                         </section>
                     </form>
-                    <section style="text-align: center">
-                        <h5>Lock status: {}</h5>
-                        <h5>Pet status: {}</h5>
-                    </section>
                     </body>
                 </html>
             '''
@@ -110,26 +114,30 @@ class MyServer(BaseHTTPRequestHandler):
                     <meta name="viewport" content="with=device-width, initial-scale=1.0">
                     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
                 </head>
-                    <body>
+                    <body style="background-color: rgb(224, 222, 222)">
                     <section style="text-align:center">
-                        <div style="padding-top:30px">
-                            <h1>Please Login to Your Doggy Door!</h1>
+                        <div style="padding-top:30px; background-color:slateblue; padding:30px 0px">
+                            <h1 style="color: snow"><b>Please Login To Your Doggy Door!</b></h1>
                         </div>
                     </section>
                     <form action="/" method="POST">
                         <section style="text-align:center">
                             <div style="margin:1rem; padding:2rem 2rem; text-align:center">
                                 <div style="display:inline-block; padding:1rem 1rem; vertical-align:middle">
-                                    <h3>Login:</h3>
                                     <div style="display:table; width:100%; height:auto; margin:10px 0px">
-                                        <label for="usr">Username:</label>
-                                        <input id="usr" name="usr">
-                                        <label for="pwd">Password:</label>
-                                        <input type="password" id="pwd" name="pwd">
-                                        <div style="display:table; width:100%; height:auto; margin:10px 0px">
-                                            <input type="submit" name="submit" value="Login">
+                                        <div style="font-size: 20px">
+                                            <label for="usr">Username:</label>
+                                            <input id="usr" name="usr">
                                         </div>
-                                        <h3>Invalid Credentials</h3>
+                                        <br>
+                                        <div style="font-size: 20px"
+                                            <label for="pwd">Password:</label>
+                                            <input type="password" id="pwd" name="pwd">
+                                        </div>
+                                        <div style="display:table; width:100%; height:auto; margin:10px 0px">
+                                            <input type="submit" name="submit" value="Login" style="font-size: 20px; width: fit-content; height: 60px; border-radius: 8px; padding-right: 22px; padding-left: 22px">
+                                        </div>
+                                        <h3 style="color: red">Invalid Credentials!</h3>
                                     </div>
                                 </div>
                             </div>
@@ -146,24 +154,28 @@ class MyServer(BaseHTTPRequestHandler):
                     <meta name="viewport" content="with=device-width, initial-scale=1.0">
                     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
                 </head>
-                    <body>
+                    <body style="background-color: rgb(224, 222, 222)">
                     <section style="text-align:center">
-                        <div style="padding-top:30px">
-                            <h1>Please Login to Your Doggy Door!</h1>
+                        <div style="padding-top:30px; background-color:slateblue; padding:30px 0px">
+                            <h1 style="color: snow"><b>Please Login To Your Doggy Door!</b></h1>
                         </div>
                     </section>
                     <form action="/" method="POST">
                         <section style="text-align:center">
                             <div style="margin:1rem; padding:2rem 2rem; text-align:center">
                                 <div style="display:inline-block; padding:1rem 1rem; vertical-align:middle">
-                                    <h3>Login:</h3>
                                     <div style="display:table; width:100%; height:auto; margin:10px 0px">
-                                        <label for="usr">Username:</label>
-                                        <input id="usr" name="usr">
-                                        <label for="pwd">Password:</label>
-                                        <input type="password" id="pwd" name="pwd">
+                                        <div style="font-size: 20px">
+                                            <label for="usr">Username:</label>
+                                            <input id="usr" name="usr">
+                                        </div>
+                                        <br>
+                                        <div style="font-size: 20px">
+                                            <label for="pwd">Password:</label>
+                                            <input type="password" id="pwd" name="pwd">
+                                        </div>
                                         <div style="display:table; width:100%; height:auto; margin:10px 0px">
-                                            <input type="submit" name="submit" value="Login">
+                                            <input type="submit" name="submit" value="Login" style="font-size: 20px; width: fit-content; height: 60px; border-radius: 8px; padding-right: 22px; padding-left: 22px">
                                         </div>
                                     </div>
                                 </div>
@@ -192,9 +204,9 @@ class MyServer(BaseHTTPRequestHandler):
             currentBTTrack = 'ON'
         else:
             currentBTTrack = 'OFF'
-        print("HERE")
+
         print(bluetoothTrack)
-        self.wfile.write(html.format(currentBTTrack, lock_status, pet_status).encode("utf-8"))
+        self.wfile.write(html.format(lock_status, pet_status, currentBTTrack).encode("utf-8"))
 
     def do_POST(self):
 
@@ -218,7 +230,7 @@ class MyServer(BaseHTTPRequestHandler):
         if post_data == 'Login':
             loginBool = True
             
-        elif post_data == 'Bluetooth+Track':
+        elif post_data == 'Collar+Track':
             global bluetoothTrack
             if bluetoothTrack:
                 bluetoothTrack = False
