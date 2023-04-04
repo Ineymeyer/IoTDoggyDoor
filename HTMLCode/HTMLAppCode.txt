@@ -1,88 +1,53 @@
 <html>
-
-<head>
-    <meta name="viewport" content="with=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
-    
-    <style>
-        .title{
-            text-align: center;
-        }
-        .basic{
-            text-align: center;
-        }
-        .special{
-            text-align: center;
-        }
-        .parent{
-            margin: 1rem;
-            padding: 2rem 2rem;
-            text-align: center;
-        }
-        .child{
-            display: inline-block;
-            padding: 1rem 1rem;
-            vertical-align: middle;
-        }
-        .child2{
-            display: inline-block;
-            padding: 1rem 1rem;
-            vertical-align: middle;
-        }
-        .space{
-            padding-top: 30px;
-        }
-        .container {
-            display:table;
-            width:100%;
-            height:auto;
-            margin:10px 0px;
-        }
-        
-    </style>
-</head>
-    <body>
-
-    <section class="title">
-        <div class="space">
-            <h1>Welcome To Your Doggy Door!</h1>
-        </div>
-    </section>
-
-    <section class="basic">
-        <div class="parent">
-            
-            <div class="child">
-                <h3>Basic Door Control:</h3>
-                <div class="container">
-                    <input type="submit" name="submit" value="Unlock">
-                </div>
-                <div class="container">
-                    <input type="submit" name="submit" value="Lock">
-                </div>
-            </div>
-
-            <div class="child">
-                <h3>Special Features:</h3>
-                <div class="container">
-                    <input type="submit" name="submit" value="Bluetooth Track">
-                </div>
-                <h10>Door will unlock when your pet is close; otherwise, door will lock</h10>
-                <div class="container">
-                    <input type="submit" name="submit" value="Summon Pet">
-                </div>
-                <h10>Play sound to grab the attention of your pet</h10>
-                <div class="container">
-                    <input type="submit" name="submit" value="Release Treat">
-                </div>
-                <h10>Dispense a treat for your pet</h10>
-            </div>
-        </div>
-
-       
-    </section>
- 
-
-    </body>
-
-</html>
+                <head> 
+                    <meta name="viewport" content="with=device-width, initial-scale=1.0">
+                    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+                    <meta http-equiv="refresh" content="3" >
+                </head>
+                    <body style="background-color: rgb(224, 222, 222)">
+                    <section style="text-align:center">
+                        <div style="padding-top:30px; background-color:slateblue; padding:30px 0px">
+                            <h1 style="color:snow"><b>Welcome To Your Doggy Door!</b></h1>
+                        </div>
+                    </section>
+                    <section style="text-align: center">
+                        <br>
+                        <br>
+                        <h4>Lock status: {}</h4>
+                        <h4>Pet status: {}</h4>
+                    </section>
+                    <form action="/" method="POST">
+                        <section style="text-align:center">
+                            <div style="margin:1rem; text-align:center">
+                                <div style="display:inline-block; padding:1rem 1rem; vertical-align:middle">
+                                    <h3 style="font-size: 28px"><b>Basic Door Control:</b></h3>
+                                    <div style="display:table; width:100%; height:auto; margin:10px 0px">
+                                        <input type="submit" name="submit" value="Unlock" style="font-size: 20px; width: 80%; height: 60px; border-radius: 8px">
+                                    </div>
+                                    <div style="display:table; width:100%; height:auto; margin:10px 0px">
+                                        <input type="submit" name="submit" value="Lock" style="font-size: 20px; width: 80%; height: 60px; border-radius: 8px">
+                                    </div>
+                                </div>
+                                <div style="display:inline-block; padding:1rem 1rem; vertical-align:middle">
+                                    <h3 style="font-size: 28px"><b>Special Features:</b></h3>
+                                    <div style="display:table; width:100%; height:auto; margin:10px 0px;">
+                                        <input type="submit" name="submit" value="Collar Track" style="font-size: 20px; width: fit-content; height: 60px; border-radius: 8px; padding-right: 22px; padding-left: 22px">
+                                    </div>
+                                    <div>
+                                        <label>Currently: {}</label>
+                                    </div>
+                                    <h10>Door will unlock when your pet is close; otherwise, door will lock</h10>
+                                    <div style="display:table; width:100%; height:auto; margin:10px 0px">
+                                        <input type="submit" name="submit" value="Summon Pet" style="font-size: 20px; width: fit-content; height: 60px; border-radius: 8px; padding-right: 20px; padding-left: 20px">
+                                    </div>
+                                    <h10>Play a sound to grab the attention of your pet</h10>
+                                    <div style="display:table; width:100%; height:auto; margin:10px 0px">
+                                        <input type="submit" name="submit" value="Release Treat" style="font-size: 20px; width: fit-content; height: 60px; border-radius: 8px; padding-right: 20px; padding-left: 20px">
+                                    </div>
+                                    <h10>Dispense a treat for your pet</h10>
+                                </div>
+                            </div>
+                        </section>
+                    </form>
+                    </body>
+               </html>
