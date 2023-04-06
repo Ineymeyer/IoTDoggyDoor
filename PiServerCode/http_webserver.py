@@ -2,6 +2,7 @@
 
 import RPi.GPIO as GPIO
 import os
+import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 host_name = '172.23.31.250'  # IP Address of Raspberry Pi
@@ -10,8 +11,9 @@ PIN = 14 #output to arduino for lock/unlock
 btO = 8 #output to arduino for bluetooth track
 lock_status = 'unknown'
 pet_status = 'unknown'
+door_close = 'unknown'
 global loginBool
-loginBool = False
+loginBool = True
 global loginAttempt
 loginAttempt = False
 global bluetoothTrack
@@ -30,7 +32,9 @@ def setupGPIO():
     GPIO.setup(btO, GPIO.OUT) #output to arudion for bluetooth track
     GPIO.setup(PIN, GPIO.OUT) #output to arduion to lock or unlock
     GPIO.output(btO, GPIO.LOW)
-    GPIO.output(PIN, GPIO.HIGH)
+    GPIO.output(PIN, GPIO.HIGH) 
+    GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # Input for if door is open or closed
+    GPIO.setup(12, GPIO.OUT) #Output for buzzer
 
 class MyServer(BaseHTTPRequestHandler):
 
@@ -70,6 +74,7 @@ class MyServer(BaseHTTPRequestHandler):
                         <br>
                         <h4>Lock status: {}</h4>
                         <h4>Pet status: {}</h4>
+                        <h4>Door is: {}</h4>
                     </section>
                     <form action="/" method="POST">
                         <section style="text-align:center">
@@ -190,6 +195,7 @@ class MyServer(BaseHTTPRequestHandler):
         self.do_HEAD()
         state = GPIO.input(4) #reading in from arduino if door is locked or unlocked
         petNearby = GPIO.input(7) # reading in from esp to see if tag is nearby
+        doorClosed = GPIO.input(24)
 
         if (state):
             lock_status = 'Locked'
@@ -199,6 +205,11 @@ class MyServer(BaseHTTPRequestHandler):
             pet_status = 'Nearby'
         else:
             pet_status = 'NOT Nearby'
+        if (doorClosed):
+            door_close = 'OPEN'
+        else:
+            door_close = 'CLOSED'
+        
         global bluetoothTrack
         if bluetoothTrack:
             currentBTTrack = 'ON'
@@ -206,7 +217,7 @@ class MyServer(BaseHTTPRequestHandler):
             currentBTTrack = 'OFF'
 
         print(bluetoothTrack)
-        self.wfile.write(html.format(lock_status, pet_status, currentBTTrack).encode("utf-8"))
+        self.wfile.write(html.format(lock_status, pet_status, door_close, currentBTTrack).encode("utf-8"))
 
     def do_POST(self):
 
@@ -239,6 +250,19 @@ class MyServer(BaseHTTPRequestHandler):
                 bluetoothTrack = True
                 GPIO.output(btO, GPIO.HIGH) #telling arduino to listen to esp for tracking
 
+        elif post_data == 'Summon+Pet':
+            delay = 0.1
+            GPIO.output(12, GPIO.HIGH)
+            time.sleep(delay)
+            GPIO.output(12, GPIO.LOW)
+            time.sleep(delay)
+            GPIO.output(12, GPIO.HIGH)
+            time.sleep(delay)
+            GPIO.output(12, GPIO.LOW)
+            time.sleep(delay)
+            GPIO.output(12, GPIO.HIGH)
+            time.sleep(delay)
+            GPIO.output(12, GPIO.LOW)
 
         elif post_data == 'Lock':
             GPIO.output(PIN, GPIO.HIGH)
