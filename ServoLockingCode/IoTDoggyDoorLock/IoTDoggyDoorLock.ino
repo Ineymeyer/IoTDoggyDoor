@@ -11,6 +11,7 @@
   |   10  | Servo on the left side of the door            | N/A                        | N/A
   |   11  | Signal going to Raspberry Pi with lock status | If it is locked            | If it is unlocked
   |   12  | Signal from Raspberry Pi with tracking status | If it is enabled           | If it is disabled
+  |   13  | Signal going to pi to tell if door is open    | N/A                        | NA
   */
 
 // Creating new servo motor objects
@@ -48,7 +49,8 @@ void setup() {
   pinMode(7,INPUT_PULLUP);
   pinMode(11, OUTPUT);
   pinMode(12, INPUT_PULLUP);
-
+  pinMode(13, OUTPUT);
+  digitalWrite(13, LOW);
   digitalWrite(11, LOW);
 }
 
@@ -57,9 +59,11 @@ void loop() {
   if(digitalRead(4) == HIGH){
     doorClosed = false;
     digitalWrite(3,HIGH);
+    digitalWrite(13, HIGH);
   } else {
     doorClosed = true;
     digitalWrite(3,LOW);
+    digitalWrite(13, LOW);
   }
 
   /* Locks the door if...
