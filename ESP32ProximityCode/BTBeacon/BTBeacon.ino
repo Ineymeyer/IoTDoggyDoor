@@ -4,37 +4,37 @@
 #include <BLEAdvertisedDevice.h>
 
 String knownBLEAddresses[] = {"ff:ff:10:36:29:cd"}; // Array with known BLE addresses
-int RSSI_THRESHOLD = -55;                           // If the RSSI of the device is lower, the device is near, if it is higher, the device is too far
+int RSSI_THRESHOLD = -55,                           // If the RSSI of the device is lower, the device is near, if it is higher, the device is too far
+    scanTime = 1,                                   // Scan time in seconds
+    missCount = 0;                                  // Keeps track of consecutive scan misses
 bool device_found = false;                          // Boolean that indicates if the device has been found during a scan
-int scanTime = 1;                                   // Scan time in seconds
-int missCount = 0;                                  // Keeps track of consecutive scan misses
 BLEScan* pBLEScan;                                  // Creates a new scan object
 
 class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
-	  // Callback function that runs after a device is found during the scan
+	// Callback function that runs after a device is found during the scan
     void onResult(BLEAdvertisedDevice advertisedDevice) {
       for (int i = 0; i < (sizeof(knownBLEAddresses) / sizeof(knownBLEAddresses[0])); i++) {
         // Uncomment to Enable Debug Information
         /* 
-		    Serial.println("*************Start**************");
+		Serial.println("*************Start**************");
         Serial.println(sizeof(knownBLEAddresses));
         Serial.println(sizeof(knownBLEAddresses[0]));
         Serial.println(sizeof(knownBLEAddresses)/sizeof(knownBLEAddresses[0]));
         Serial.println(advertisedDevice.getAddress().toString().c_str());
         Serial.println(knownBLEAddresses[i].c_str());
         Serial.println("*************End**************");
-		    */
+		*/
         
         if (strcmp(advertisedDevice.getAddress().toString().c_str(), knownBLEAddresses[0].c_str()) == 0) {
           device_found = true;
           missCount = 0;
-		      // Uncomment to Enable Debug Information
-		      /*
-		      Serial.print("\nIts a match!\n");
+		  // Uncomment to Enable Debug Information
+		  /*
+		  Serial.print("\nIts a match!\n");
           Serial.print("Tag address: " + knownBLEAddresses[i] + "\n");
           Serial.print("Tag address found: " + String(advertisedDevice.getAddress().toString().c_str()) + "\n");
           Serial.printf("Advertised Device: %s \n", advertisedDevice.toString().c_str());
-		      */
+		  */
           break;
         }
       }
@@ -43,7 +43,7 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
 
 void setup() {
   Serial.begin(115200); // Enable UART on ESP32
-  BLEDevice::init(""); // Initialize the ESP32
+  BLEDevice::init("");  // Initialize the ESP32
   
   // Pin configuration
   pinMode(5, OUTPUT);    // Make pin 5 as output enabling the onboard LED
@@ -68,7 +68,7 @@ void loop() {
     missCount++;
     // Serial.print(missCount);
 	
-	  // If the device has missed 5 or more times, reset the pins to their initial states
+	// If the device has missed 5 or more times, reset the pins to their initial states
     if (missCount >= 5) {
       digitalWrite(5, HIGH);
       digitalWrite(17, LOW);
@@ -81,14 +81,14 @@ void loop() {
   for (int i = 0; i < foundDevices.getCount(); i++) {
       BLEAdvertisedDevice device = foundDevices.getDevice(i);
 	  
-	    // If the address of the current device is equal to the saved BLE address get and print the RSSI to the serial monitor
+	  // If the address of the current device is equal to the saved BLE address get and print the RSSI to the serial monitor
       if (String(device.getAddress().toString().c_str()) == knownBLEAddresses[0]) {
         int rssi = device.getRSSI();
         Serial.print("RSSI: ");
         Serial.println(rssi);
         
-		    // If the RSSI is within the threshold and it is found, turn on the LED and set the indicator pins high, then reset the boolean to false
-		    // If it is not found, turn off the LED and set the indicator pins low
+		// If the RSSI is within the threshold and it is found, turn on the LED and set the indicator pins high, then reset the boolean to false
+		// If it is not found, turn off the LED and set the indicator pins low
         if (rssi > RSSI_THRESHOLD && device_found == true) {
           digitalWrite(5, LOW);
           digitalWrite(17, HIGH);
