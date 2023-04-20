@@ -61,7 +61,7 @@ class MyServer(BaseHTTPRequestHandler):
                 <head> 
                     <meta name="viewport" content="with=device-width, initial-scale=1.0">
                     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
-                    <meta http-equiv="refresh" content="3" >
+                    <meta http-equiv="refresh" content="1" >
                 </head>
                     <body style="background-color: rgb(224, 222, 222)">
                     <section style="text-align:center">
@@ -101,10 +101,12 @@ class MyServer(BaseHTTPRequestHandler):
                                         <input type="submit" name="submit" value="Summon Pet" style="font-size: 20px; width: fit-content; height: 60px; border-radius: 8px; padding-right: 20px; padding-left: 20px">
                                     </div>
                                     <h10>Play a sound to grab the attention of your pet</h10>
+                                    <br>
+                                    <br>
                                     <div style="display:table; width:100%; height:auto; margin:10px 0px">
-                                        <input type="submit" name="submit" value="Release Treat" style="font-size: 20px; width: fit-content; height: 60px; border-radius: 8px; padding-right: 20px; padding-left: 20px">
+                                        <input type="submit" name="submit" value="Logout" style="font-size: 20px; width: fit-content; height: 60px; border-radius: 8px; padding-right: 20px; padding-left: 20px">
                                     </div>
-                                    <h10>Dispense a treat for your pet</h10>
+                                    <h10>Please logout when done</h10>
                                 </div>
                             </div>
                         </section>
@@ -216,7 +218,7 @@ class MyServer(BaseHTTPRequestHandler):
         else:
             currentBTTrack = 'OFF'
 
-        print(bluetoothTrack)
+        #print(bluetoothTrack)
         self.wfile.write(html.format(lock_status, pet_status, door_close, currentBTTrack).encode("utf-8"))
 
     def do_POST(self):
@@ -236,8 +238,8 @@ class MyServer(BaseHTTPRequestHandler):
             else:
                 global loginAttempt
                 loginAttempt = True
-        print("NOW")
-        print(post_data)
+        #print("NOW")
+        #print(post_data)
         if post_data == 'Login':
             loginBool = True
             
@@ -245,10 +247,17 @@ class MyServer(BaseHTTPRequestHandler):
             global bluetoothTrack
             if bluetoothTrack:
                 bluetoothTrack = False
+                print("here")
                 GPIO.output(btO, GPIO.LOW) #telling arduino to not listen to esp for tracking
             else:
                 bluetoothTrack = True
                 GPIO.output(btO, GPIO.HIGH) #telling arduino to listen to esp for tracking
+
+        elif post_data == 'Logout':
+            #global loginBool
+            loginBool = False
+            #global loginAttempt
+            loginAttempt = False
 
         elif post_data == 'Summon+Pet':
             delay = 0.1
@@ -264,18 +273,23 @@ class MyServer(BaseHTTPRequestHandler):
             time.sleep(delay)
             GPIO.output(12, GPIO.LOW)
 
-        elif post_data == 'Lock':
-            GPIO.output(PIN, GPIO.HIGH)
-            lock_status = 'locked'
-            print(lock_status)
-        else:
+        elif post_data == 'Unlock':
             GPIO.output(PIN, GPIO.LOW)
             lock_status = 'unlocked'
-            print(lock_status)
+            GPIO.output(btO, GPIO.LOW)
+            bluetoothTrack = False
+            #print(lock_status)
+            
+        else:
+            GPIO.output(PIN, GPIO.HIGH)
+            lock_status = 'locked'
+            GPIO.output(btO, GPIO.LOW)
+            bluetoothTrack = False
+            #print(lock_status)
 
-        print("LED is {}".format(post_data))
-        print("login is : {}".format(loginBool))
-        print("login attempt is : {}".format(loginAttempt))
+        #print("LED is {}".format())
+        #print("login is : {}".format(loginBool))
+        #print("login attempt is : {}".format(loginAttempt))
         self._redirect('/')  # Redirect back to the root url
 
 
