@@ -6,4 +6,4 @@
 
 ### ESP32 Proximity is the code for detecting a BLE tag with the ESP32 sensor.
 
-### 
+### ServoLockingCode is the code to control the servo motors through the ATmega328P
